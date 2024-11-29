@@ -1,5 +1,18 @@
 from rest_framework import serializers
 from .models import Rating
+from .models import LifeArea
+
+class LifeAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LifeArea
+        fields = ['id', 'name', 'user']
+        read_only_fields = ['user']  # Пользователь будет определяться автоматически
+
+    def validate_name(self, value):
+        # Проверяем, что имя сферы не пустое
+        if not value.strip():
+            raise serializers.ValidationError("Название сферы не может быть пустым.")
+        return value
 
 class RatingSerializer(serializers.ModelSerializer):
     life_area_score = serializers.FloatField(read_only=True)
